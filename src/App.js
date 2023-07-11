@@ -6,7 +6,7 @@ function App() {
           <h2 className="d-flex justify-between mb-30">
             Cart{' '}
             <img
-              className="removeBtn cu-p mr-20"
+              className="removeBtn cu-p"
               src="img/btn-remove.svg"
               alt="Remove"
             />
