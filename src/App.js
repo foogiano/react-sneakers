@@ -1,6 +1,6 @@
 import Header from './components/Header';
 import Card from './components/Card';
-import Drawer from './components/Cart';
+import Drawer from './components/Drawer';
 
 const arr = [
   {
@@ -39,7 +39,12 @@ function App() {
         </div>
         <div className="d-flex">
           {arr.map((obj) => (
-            <Card title={obj.title} price={obj.price} imageUrl={obj.imageUrl} />
+            <Card
+              title={obj.title}
+              price={obj.price}
+              imageUrl={obj.imageUrl}
+              onClick={() => console.log(obj)}
+            />
           ))}
         </div>
       </div>
