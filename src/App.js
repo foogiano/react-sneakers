@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import Header from './components/Header';
 import Card from './components/Card';
 import Drawer from './components/Drawer';
@@ -10,16 +11,20 @@ function App() {
   const [cartOpened, setCartOpened] = React.useState(false);
 
   React.useEffect(() => {
-    fetch('https://64b7eb3521b9aa6eb07947bb.mockapi.io/items')
+    axios
+      .get('https://64b7eb3521b9aa6eb07947bb.mockapi.io/items')
       .then((res) => {
-        return res.json();
-      })
-      .then((json) => {
-        setItems(json);
+        setItems(res.data);
+      });
+    axios
+      .get('https://64b7eb3521b9aa6eb07947bb.mockapi.io/cart')
+      .then((res) => {
+        setCartItems(res.data);
       });
   }, []);
 
   const onAddtoCart = (obj) => {
+    axios.post('https://64b7eb3521b9aa6eb07947bb.mockapi.io/cart', obj);
     setCartItems((prev) => [...prev, obj]);
   };
 
