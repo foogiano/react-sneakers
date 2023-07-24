@@ -35,61 +35,52 @@ header {
   }
 }
 
-.card {
-  border: 1px solid #f3f3f3;
-  padding: 30px;
-  width: 220px;
-  border-radius: 40px;
-  margin-right: 40px;
-  transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
-  cursor: pointer;
+.cartEmpty {
+  text-align: center;
 
-  &:hover {
-    box-shadow: 0px 20px 35px rgba(0, 0, 0, 0.06);
-    transform: translateY(-5px);
+  p {
+    width: 280px;
+    line-height: 24px;
   }
 
-  .favorite {
-    position: absolute;
-    cursor: pointer;
-  }
+  .greenButton {
+    width: 245px;
+    margin-top: 20px;
 
-  span {
-    font-size: 13px;
-    opacity: 0.5;
-    text-transform: uppercase;
+    &:hover {
+      img {
+        transform: rotate(180deg) translateX(3px);
+      }
+    }
+    img {
+      position: relative;
+      top: 1px;
+      transform: rotate(180deg);
+      margin-right: 15px;
+      transition: transform 0.15 ease-in-out;
+    }
   }
-
-  b {
-    font-size: 14px;
-  }
-  h5 {
-    font-weight: 400;
-    font-size: 14px;
-  }
-}
-
-button {
-  background: #ffffff;
-  border: 1px solid #f2f2f2;
-  box-sizing: border-box;
-  border-radius: 8px;
-  height: 32px;
-  width: 32px;
-  cursor: pointer;
 }
 
 .search-block {
   border: 1px solid #f3f3f3;
   border-radius: 10px;
   padding: 0 15px;
-}
+  position: relative;
 
-input {
-  border: 0;
-  padding: 13px;
-  font-size: 16px;
-  width: 200px;
+  .clear {
+    position: absolute;
+    right: 0;
+    top: 13px;
+    right: 15px;
+  }
+
+  input {
+    border: 0;
+    padding: 13px;
+    font-size: 16px;
+    width: 200px;
+  }
 }
 
 .overlay {
@@ -114,6 +105,7 @@ input {
   padding: 30px;
 
   .items {
+    flex: 1;
     overflow: auto;
     margin-bottom: 40px;
   }
@@ -132,10 +124,6 @@ input {
       }
     }
   }
-}
-
-.items {
-  flex: 1;
 }
 
 .cartTotalBlock {

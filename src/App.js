@@ -1,171 +1,103 @@
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import axios from 'axios';
+import Header from './components/Header';
+import Drawer from './components/Drawer';
+import Home from './pages/Home';
+import Favorites from './pages/Favorites';
+
 function App() {
+  const [items, setItems] = React.useState([]);
+  const [cartItems, setCartItems] = React.useState([]);
+  const [favorites, setFavorites] = React.useState([]);
+  const [searchValue, setSearchValue] = React.useState('');
+  const [cartOpened, setCartOpened] = React.useState(false);
+
+  React.useEffect(() => {
+    axios
+      .get('https://64b7eb3521b9aa6eb07947bb.mockapi.io/items')
+      .then((res) => {
+        setItems(res.data);
+      });
+    axios
+      .get('https://64b7eb3521b9aa6eb07947bb.mockapi.io/cart')
+      .then((res) => {
+        setCartItems(res.data);
+      });
+    axios
+      .get('https://64b7eb3521b9aa6eb07947bb.mockapi.io/favorites')
+      .then((res) => {
+        setFavorites(res.data);
+      });
+  }, []);
+
+  const onAddToCart = (obj) => {
+    axios.post('https://64b7eb3521b9aa6eb07947bb.mockapi.io/cart', obj);
+    setCartItems((prev) => [...prev, obj]);
+  };
+
+  const onRemoveItem = (id) => {
+    axios.delete(`https://64b7eb3521b9aa6eb07947bb.mockapi.io/cart/${id}`);
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const onAddToFavorite = async (obj) => {
+    try {
+      if (favorites.find((favObj) => favObj.id === obj.id)) {
+        axios.delete(
+          `https://64b7eb3521b9aa6eb07947bb.mockapi.io/favorites/${obj.id}`
+        );
+      } else {
+        const { data } = await axios.post(
+          'https://64b7eb3521b9aa6eb07947bb.mockapi.io/favorites',
+          obj
+        );
+        setFavorites((prev) => [...prev, data]);
+      }
+    } catch (err) {
+      alert("Failed to add in 'Favorites' ");
+    }
+  };
+
+  const onChangeSearchInput = (event) => {
+    setSearchValue(event.target.value);
+  };
+
   return (
     <div className="wrapper clear">
-      <div className="overlay">
-        <div className="drawer">
-          <h2 className="d-flex justify-between mb-30">
-            Cart{' '}
-            <img
-              className="removeBtn cu-p"
-              src="img/btn-remove.svg"
-              alt="Remove"
+      {cartOpened && (
+        <Drawer
+          items={cartItems}
+          onClose={() => setCartOpened(false)}
+          onRemove={onRemoveItem}
+        />
+      )}
+
+      <Header onClickCart={() => setCartOpened(true)} />
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <Home
+              items={items}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
+              onChangeSearchInput={onChangeSearchInput}
+              onAddToFavorite={onAddToFavorite}
+              onAddToCart={onAddToCart}
             />
-          </h2>
-          <div className="items">
-            <div className="cartItem d-flex align-center mb-20">
-              <div
-                style={{ backgroundImage: 'url(/img/sneakers/sneakers2.jpg)' }}
-                className="cartItemImg"
-              ></div>
-              <div className="mr-20 flex">
-                <p className="mb-5"> Men's Nike Air Max 270 Sneakers</p>
-                <b>199 usd.</b>
-              </div>
-              <img
-                className="removeBtn"
-                src="img/btn-remove.svg"
-                alt="Remove"
-              />
-            </div>
-            <div className="cartItem d-flex align-center">
-              <div
-                style={{ backgroundImage: 'url(/img/sneakers/sneakers4.jpg)' }}
-                className="cartItemImg"
-              ></div>
-              <div className="mr-20 flex">
-                <p className="mb-5"> Men's Nike Air Max 270 Sneakers</p>
-                <b>149 usd.</b>
-              </div>
-              <img
-                className="removeBtn"
-                src="img/btn-remove.svg"
-                alt="Remove"
-              />
-            </div>
-          </div>
-          <div className="cartTotalBlock">
-            <ul>
-              <li>
-                <span>Total:</span>
-                <div></div>
-                <b>348 usd.</b>
-              </li>
-              <li>
-                <span>Tax 5%:</span>
-                <div></div>
-                <b>17.4 usd</b>
-              </li>
-            </ul>
-            <button className="greenButton">
-              Place an order <img src="/img/arrow.svg" alt="Arrow" />{' '}
-            </button>
-          </div>
-        </div>
-      </div>
-      <header className="d-flex justify-between align-center p-40">
-        <div className="d-flex align-center">
-          <img width={40} height={40} src="/img/logo.png" alt="Logo" />
-          <div>
-            <h3 className="text-uppercase">React Sneakers</h3>
-            <p className="opacity-5">Store for the best sneakers</p>
-          </div>
-        </div>
-        <ul className="d-flex">
-          <li className="mr-30">
-            <img width={20} height={20} src="/img/cart.svg" alt="Cart" />
-            <span>1205 usd</span>
-          </li>
-          <li>
-            <img width={20} height={20} src="/img/user.svg" alt="User" />
-          </li>
-        </ul>
-      </header>
-      <div className="content p-40">
-        <div className="d-flex align-center justify-between mb-40">
-          <h1>All Sneakers</h1>
-          <div className="search-block d-flex">
-            <img src="/img/search.svg" alt="Search" />
-            <input placeholder="Seach..." />
-          </div>
-        </div>
-        <div className="d-flex">
-          <div className="card">
-            <div className="favorite">
-              <img src="/img/heart-unliked.svg" alt="Unliked" />
-            </div>
-            <img
-              width={133}
-              height={112}
-              src="/img/sneakers/sneakers1.jpg"
-              alt="Sneakers"
-            />
-            <h5> Men's Nike Blazer Mid Suede Sneakers </h5>
-            <div className="d-flex justify-between align-center">
-              <div className="d-flex flex-column">
-                <span>Price:</span>
-                <b> 199 usd.</b>
-              </div>
-              <button>
-                <img width={11} height={11} src="/img/plus.svg" alt="Plus" />
-              </button>
-            </div>
-          </div>
-          <div className="card">
-            <img
-              width={133}
-              height={112}
-              src="/img/sneakers/sneakers2.jpg"
-              alt="Sneakers"
-            />
-            <h5> Men's Nike Blazer Mid Suede Sneakers </h5>
-            <div className="d-flex justify-between align-center">
-              <div className="d-flex flex-column">
-                <span>Price:</span>
-                <b> 199 usd.</b>
-              </div>
-              <button>
-                <img width={11} height={11} src="/img/plus.svg" alt="Plus" />
-              </button>
-            </div>
-          </div>
-          <div className="card">
-            <img
-              width={133}
-              height={112}
-              src="/img/sneakers/sneakers3.jpg"
-              alt="Sneakers"
-            />
-            <h5> Men's Nike Blazer Mid Suede Sneakers </h5>
-            <div className="d-flex justify-between align-center">
-              <div className="d-flex flex-column">
-                <span>Price:</span>
-                <b> 149 usd.</b>
-              </div>
-              <button>
-                <img width={11} height={11} src="/img/plus.svg" alt="Plus" />
-              </button>
-            </div>
-          </div>
-          <div className="card">
-            <img
-              width={133}
-              height={112}
-              src="/img/sneakers/sneakers4.jpg"
-              alt="Sneakers"
-            />
-            <h5> Men's Nike Blazer Mid Suede Sneakers </h5>
-            <div className="d-flex justify-between align-center">
-              <div className="d-flex flex-column">
-                <span>Price:</span>
-                <b> 149 usd.</b>
-              </div>
-              <button>
-                <img width={11} height={11} src="/img/plus.svg" alt="Plus" />
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+          }
+        />
+      </Routes>
+
+      <Routes>
+        <Route
+          path="/favorites"
+          element={
+            <Favorites items={favorites} onAddToFavorite={onAddToFavorite} />
+          }
+        />
+      </Routes>
     </div>
   );
 }
