@@ -1,9 +1,11 @@
+import styles from './Drawer.module.scss';
+
 function Drawer({ onClose, onRemove, items = [] }) {
   return (
     <div className="overlay">
-      <div className="drawer">
+      <div className={styles.drawer}>
         <h2 className="d-flex justify-between mb-30">
-          Cart{' '}
+          Cart
           <img
             onClick={onClose}
             className="removeBtn cu-p"
@@ -14,10 +16,12 @@ function Drawer({ onClose, onRemove, items = [] }) {
 
         {items.length > 0 ? (
           <div>
-            {' '}
-            <div className="items">
+            <div className={styles.items}>
               {items.map((obj) => (
-                <div className="cartItem d-flex align-center mb-20">
+                <div
+                  key={obj.id}
+                  className="cartItem d-flex align-center mb-20"
+                >
                   <div
                     style={{ backgroundImage: `url(${obj.imageUrl})` }}
                     className="cartItemImg"
